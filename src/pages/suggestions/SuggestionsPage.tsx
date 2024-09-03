@@ -1,44 +1,14 @@
 import { NavLink } from "react-router-dom";
 import "./Suggestions.scss";
-
 import bulbIcon from "../../assets/suggestions/icon-suggestions.svg";
 import Dropdown from "../../components/dropdown/Dropdown";
 import FeedbackCard from "../../components/feedback-card/FeedbackCard";
 import data from '../../data/data.json';
 import NoFeedback from "../../components/no-feedback/NoFeedback";
-
-// Interfaces for the data structure
-interface User {
-  image: string;
-  name: string;
-  username: string;
-}
-
-interface Comment {
-  id: number;
-  content: string;
-  user: User;
-  replies?: Reply[];
-}
-
-interface Reply {
-  content: string;
-  replyingTo: string;
-  user: User;
-}
-
-interface Feedback {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  upvotes: number;
-  status: string;
-  comments?: Comment[];
-}
+import Feedback from "../../types/Feedback";
 
 const SuggestionsPage = () => {
-  const feedbackData: Feedback[] = data?.productRequests || [];
+  const feedbackData: Feedback[] = data?.productRequests;
 
   return (
     <section>
@@ -74,8 +44,6 @@ const SuggestionsPage = () => {
                 <p>Live</p>
                 <span>0</span>
               </div>
-              <div className="sidebar__roadmap__category"></div>
-              <div className="sidebar__roadmap__category"></div>
             </div>
           </div>
         </div>
@@ -101,11 +69,8 @@ const SuggestionsPage = () => {
               feedbackData.map((feedback) => (
                 <FeedbackCard
                   key={feedback.id}
-                  title={feedback.title}
-                  description={feedback.description}
-                  category={feedback.category}
-                  upvotes={feedback.upvotes}
-                  comments={feedback.comments?.length || 0}
+                  {...feedback}
+                  comments={feedback.comments || []}
                 />
               ))
             )}

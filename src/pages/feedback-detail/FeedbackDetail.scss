@@ -1,0 +1,37 @@
+.feedback {
+  padding-top: 54px;
+  padding-bottom: 54px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    &__link {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      p {
+        color: #647196;
+        font-size: 14px;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+.editBtn {
+  color: #f2f4fe;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: 10px;
+  background: #4661e6;
+  border: none;
+  transition: 0.5s ease;
+
+  &:hover {
+    border-radius: 10px;
+    background: #7c91f9;
+  }
+}
