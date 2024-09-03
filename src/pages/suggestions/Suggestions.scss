@@ -1,0 +1,148 @@
+.suggestions-container {
+  display: flex;
+  gap: 30px;
+  padding-top: 54px;
+  padding-bottom: 54px;
+}
+
+.sidebar {
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  &__logo {
+    padding: 62px 24px 24px 24px;
+    border-radius: 10px;
+    background: radial-gradient(
+      166.82% 166.82% at 103.9% -10.39%,
+      #e84d70 0%,
+      #a337f6 53.09%,
+      #28a7ed 100%
+    );
+
+    h2 {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.25px;
+    }
+
+    p {
+      color: #fff;
+      font-size: 15px;
+      font-weight: 500;
+    }
+  }
+
+  &__filters {
+    padding: 24px;
+    border-radius: 10px;
+    background: #fff;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    button {
+      color: #4661e6;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 10px;
+      background: #f2f4ff;
+      border: none;
+    }
+  }
+
+  &__roadmap {
+    padding: 24px;
+    border-radius: 10px;
+    background: #fff;
+
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+
+      h3 {
+        color: #3a4374;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.25px;
+      }
+
+      a {
+        color: #4661e6;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration-line: underline;
+      }
+    }
+
+    &__category {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      p {
+        color: #647196;
+        font-size: 16px;
+        font-weight: 400;
+      }
+
+      span {
+        color: #647196;
+        font-size: 16px;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+.main {
+  width: 80%;
+
+  &__header {
+    border-radius: 10px;
+    background: #373f68;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+
+    &__left {
+      display: flex;
+      align-items: center;
+      gap: 38px;
+    }
+
+    &__suggestions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      h3 {
+        color: #fff;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.25px;
+      }
+    }
+  }
+}
+
+.addBtn {
+  color: #f2f4fe;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 12px 24px;
+  transition: 0.5s ease;
+  border-radius: 10px;
+  background: #ad1fea;
+
+  &:hover {
+    background: #bb6bde;
+  }
+}

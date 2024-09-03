@@ -1,0 +1,37 @@
+.dropdown-container {
+  position: relative;
+  // width: 200px;
+  cursor: pointer;
+}
+
+.dropdown-header {
+  padding: 10px 20px;
+  background: transparent;
+  color: white;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.arrow {
+  margin-left: 10px;
+}
+
+.dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  margin-top: 5px;
+  list-style-type: none;
+  padding: 0;
+}
+
+.dropdown-item {
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+}
