@@ -4,15 +4,13 @@ import "./CommentCard.scss";
 import request from '../../server/request';
 import { useParams } from 'react-router-dom';
 import { message } from 'antd';
-import LoadingPage from '../loading/LoadingPage';
 
-const CommentCard = (props: Comment) => {
+const CommentCard = (props: Comment & { refetch: boolean; setRefetch: React.Dispatch<React.SetStateAction<boolean>> }) => {
   const { feedbackId } = useParams();
   const { content, user, _id, replies } = props;
   const [isReplying, setIsReplying] = useState(false);
   const [replyContent, setReplyContent] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [refetch, setRefetch] = useState(false);
+  const [localReplies, setLocalReplies] = useState<Reply[]>(replies || []); // Manage local state for replies
 
   const handleReplyClick = () => {
     setIsReplying(!isReplying);
@@ -22,33 +20,40 @@ const CommentCard = (props: Comment) => {
     setReplyContent(e.target.value);
   };
 
-
   const handlePostReply = async () => {
+    const optimisticReply: Reply = {
+      content: replyContent,
+      replyingTo: user.username,
+      user: { name: "Arnie Thompson", username: "thomasse", image: "/user-images/image-george.jpg" },
+    };
+
     if (replyContent.trim()) {
+      // Optimistically update the UI
+      setLocalReplies([...localReplies, optimisticReply]);
+      setReplyContent('');
+      setIsReplying(false);
+
       try {
-        setLoading(true);
-        await request.post(`/feedback/${feedbackId}/comments/${_id}/replies`, {
-          content: replyContent,
-          replyingTo: user.username,
-          user: { name: "Arnie Thompson", username: "thomasse", image: "/user-images/image-george.jpg" },
-        });
+        // Make the API request to post the reply
+        await request.post(`/feedback/${feedbackId}/comments/${_id}/replies`, optimisticReply);
 
+        // Optionally, refetch if necessary
+        // setRefetch(!refetch);
 
-        message.success("Comment added");
-        setRefetch(!refetch);
-        setReplyContent('');
-        setIsReplying(false);
+        message.success("Reply added successfully");
       } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false)
-      }
+        // Rollback in case of error
+        console.error("Error adding reply", error);
+        message.error("Failed to add reply");
 
+        // Rollback optimistic UI
+        setLocalReplies(localReplies.filter((reply) => reply !== optimisticReply));
+      }
     }
   };
 
   return (
-    <>{!loading ? <div className="comment">
+    <div className="comment">
       <div className="comment__header">
         <div className="comment__user">
           <img src={user?.image} alt={user?.name} />
@@ -65,9 +70,9 @@ const CommentCard = (props: Comment) => {
         <p>{content}</p>
       </div>
 
-      {replies && replies.length > 0 && (
+      {localReplies.length > 0 && (
         <div className="comment__replies">
-          {replies.map((reply: Reply, index) => (
+          {localReplies.map((reply, index) => (
             <div key={index} className="comment__reply-item">
               <div className="comment__user">
                 <img src={reply.user.image} alt={reply.user.name} />
@@ -86,16 +91,12 @@ const CommentCard = (props: Comment) => {
 
       {isReplying && (
         <div className="comment__reply-box">
-          <textarea
-            value={replyContent}
-            onChange={handleReplyChange}
-          />
+          <textarea value={replyContent} onChange={handleReplyChange} />
           <button onClick={handlePostReply}>Post</button>
         </div>
       )}
-    </div> : <LoadingPage />}</>
-
+    </div>
   );
-}
+};
 
 export default CommentCard;

@@ -84,6 +84,11 @@
       background: #f2f4ff;
       border: none;
 
+      &.active {
+        background-color: #4661e6 !important;
+        color: white;
+      }
+
       @media (max-width: 768px) {
         font-size: 12px;
         padding: 4px 12px;
@@ -213,6 +218,6 @@
 }
 
 .filter.active {
-  background-color: #4661e6;
+  background-color: #4661e6 !important;
   color: white;
 }

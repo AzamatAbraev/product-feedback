@@ -5,17 +5,19 @@ import Feedback from "../../types/Feedback";
 import arrow from "../../assets/shared/icon-arrow-left.svg";
 import CommentCard from "../../components/comment/CommentCard";
 import request from "../../server/request";
-import "./FeedbackDetail.scss";
-import LoadingPage from "../../components/loading/LoadingPage";
 import ErrorPage from "../error/ErrorPage";
+
+import "./FeedbackDetail.scss";
+import { message } from "antd";
+import LoadingPage from "../../components/loading/LoadingPage";
 
 const FeedbackDetailPage = () => {
   const { feedbackId } = useParams();
   const [feedbackData, setFeedbackData] = useState<Feedback | null>(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [newComment, setNewComment] = useState<string>("");
   const [charRemaining, setCharRemaining] = useState<number>(250);
+  const [loading, setLoading] = useState(false);
 
   const [refetch, setRefetch] = useState(false);
 
@@ -56,6 +58,8 @@ const FeedbackDetailPage = () => {
           comments: [...(feedbackData?.comments || []), response.data],
         };
 
+        message.success("comment added");
+        setRefetch(!refetch);
         setFeedbackData(updatedFeedback);
         setNewComment("");
         setCharRemaining(250);
@@ -67,7 +71,7 @@ const FeedbackDetailPage = () => {
   };
 
   if (loading) {
-    return <LoadingPage />;
+    return <LoadingPage />
   }
 
   if (error) {
@@ -95,7 +99,7 @@ const FeedbackDetailPage = () => {
         <div className="feedback__comments">
           <h2>{feedbackData?.comments?.length || 0} {feedbackData?.comments?.length === 1 ? "Comment" : "Comments"}</h2>
           {feedbackData?.comments?.map((comment) => (
-            <CommentCard key={comment._id} {...comment} />
+            <CommentCard key={comment._id} {...comment} refetch={refetch} setRefetch={setRefetch} />
           ))}
 
           <div className="feedback__add-comment">

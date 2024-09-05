@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Pagination } from "antd"; // Import Pagination from antd
+import { Pagination } from "antd";
+import { useQuery } from "@tanstack/react-query";
 import bulbIcon from "../../assets/suggestions/icon-suggestions.svg";
 import Dropdown from "../../components/dropdown/Dropdown";
 import FeedbackCard from "../../components/feedback-card/FeedbackCard";
@@ -11,50 +12,54 @@ import request from "../../server/request";
 import "./Suggestions.scss";
 import LoadingPage from "../../components/loading/LoadingPage";
 
+interface FeedbackResponse {
+  feedback: Feedback[];
+  total: number;
+}
+
 const SuggestionsPage = () => {
-  const [feedbackData, setFeedbackData] = useState<Feedback[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [totalFeedback, setTotalFeedback] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(4);
   const [filter, setFilter] = useState<string>("All");
   const [sortBy, setSortBy] = useState<string>("Most Upvotes");
 
   const fetchFeedback = async (page: number, pageSize: number, filter: string, sortBy: string) => {
-    try {
-      const sortMap: { [key: string]: string } = {
-        "Most Upvotes": "most-upvotes",
-        "Least Upvotes": "least-upvotes",
-        "Most Comments": "most-comments",
-        "Least Comments": "least-comments",
-      };
+    const sortMap: { [key: string]: string } = {
+      "Most Upvotes": "most-upvotes",
+      "Least Upvotes": "least-upvotes",
+      "Most Comments": "most-comments",
+      "Least Comments": "least-comments",
+    };
 
-      const sortQuery = sortMap[sortBy];
+    const sortQuery = sortMap[sortBy];
 
-      const response = await request.get(
-        `/feedback?page=${page}&limit=${pageSize}&category=${filter}&sort=${sortQuery}`
-      );
-      setFeedbackData(response.data.feedback);
-      setTotalFeedback(response.data.total);
-    } catch (error) {
-      console.error("Error fetching feedback data:", error);
-    } finally {
-      setLoading(false);
-    }
+    const response = await request.get(
+      `/feedback?page=${page}&limit=${pageSize}&category=${filter}&sort=${sortQuery}`
+    );
+    return response.data;
   };
 
-  useEffect(() => {
-    fetchFeedback(currentPage, pageSize, filter, sortBy);
-  }, [currentPage, pageSize, filter, sortBy]);
+  const { data, isLoading, isError } = useQuery<FeedbackResponse>({
+    queryKey: ["feedbackData", currentPage, pageSize, filter, sortBy], 
+    queryFn: () => fetchFeedback(currentPage, pageSize, filter, sortBy),
+  });
+
 
   const handlePageChange = (page: number, pageSize: number) => {
     setCurrentPage(page);
     setPageSize(pageSize);
   };
 
-  if (loading) {
+  if (isLoading) {
     return <LoadingPage />;
   }
+
+  if (isError) {
+    return <div>Error fetching feedback data</div>;
+  }
+
+  const feedbackData = data?.feedback || [];
+  const totalFeedback = data?.total || 0;
 
   return (
     <section>
@@ -66,37 +71,37 @@ const SuggestionsPage = () => {
           </div>
           <div className="sidebar__filters">
             <button
-              className={`filter ${filter === "All" ? "active" : ""}`}
+              className={filter === "All" ? "active" : ""}
               onClick={() => setFilter("All")}
             >
               All
             </button>
             <button
-              className={`filter ${filter === "UI" ? "active" : ""}`}
+              className={filter === "UI" ? "active" : ""}
               onClick={() => setFilter("UI")}
             >
               UI
             </button>
             <button
-              className={`filter ${filter === "UX" ? "active" : ""}`}
+              className={filter === "UX" ? "active" : ""}
               onClick={() => setFilter("UX")}
             >
               UX
             </button>
             <button
-              className={`filter ${filter === "Enhancement" ? "active" : ""}`}
+              className={filter === "Enhancement" ? "active" : ""}
               onClick={() => setFilter("Enhancement")}
             >
               Enhancement
             </button>
             <button
-              className={`filter ${filter === "Bug" ? "active" : ""}`}
+              className={filter === "Bug" ? "active" : ""}
               onClick={() => setFilter("Bug")}
             >
               Bug
             </button>
             <button
-              className={`filter ${filter === "Feature" ? "active" : ""}`}
+              className={filter === "Feature" ? "active" : ""}
               onClick={() => setFilter("Feature")}
             >
               Feature
@@ -124,7 +129,7 @@ const SuggestionsPage = () => {
             {feedbackData.length === 0 ? (
               <NoFeedback />
             ) : (
-              feedbackData.map((feedback) => (
+              feedbackData.map((feedback: Feedback) => (
                 <FeedbackCard
                   key={feedback._id}
                   {...feedback}
