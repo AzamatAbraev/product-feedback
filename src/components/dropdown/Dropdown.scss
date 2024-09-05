@@ -1,6 +1,5 @@
 .dropdown-container {
   position: relative;
-  // width: 200px;
   cursor: pointer;
 }
 
@@ -29,9 +28,32 @@
   margin-top: 5px;
   list-style-type: none;
   padding: 0;
+  z-index: 10;
 }
 
 .dropdown-item {
   padding: 10px 20px;
   border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f5f5f5;
+  color: #c06dfd; /* Hover color */
+}
+
+.dropdown-item.selected {
+  color: #c06dfd; /* Selected item color */
+  font-weight: bold;
+}
+
+.dropdown-item.selected::after {
+  content: '✔'; /* Checkmark icon */
+  font-size: 16px;
+  color: #c06dfd; /* Checkmark color */
+  margin-left: auto;
 }

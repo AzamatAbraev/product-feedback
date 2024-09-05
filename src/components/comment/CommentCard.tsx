@@ -1,119 +1,101 @@
-import React, { useState } from "react";
+import { useState } from 'react';
+import { Comment, Reply } from "../../types/Comment";
 import "./CommentCard.scss";
+import request from '../../server/request';
+import { useParams } from 'react-router-dom';
+import { message } from 'antd';
+import LoadingPage from '../loading/LoadingPage';
 
-type CommentProps = {
-  content: string;
-  user: {
-    image: string;
-    name: string;
-    username: string;
-  };
-  id: number;
-  replies?: Array<{
-    content: string;
-    replyingTo: string;
-    user: {
-      image: string;
-      name: string;
-      username: string;
-    };
-  }>;
-};
+const CommentCard = (props: Comment) => {
+  const { feedbackId } = useParams();
+  const { content, user, _id, replies } = props;
+  const [isReplying, setIsReplying] = useState(false);
+  const [replyContent, setReplyContent] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [refetch, setRefetch] = useState(false);
 
-const CommentCard = (props: CommentProps) => {
-  const { content, user, replies: initialReplies = [], id } = props;
-
-  // Initialize the replies state with the saved replies from localStorage
-  const [replies, setReplies] = useState(() => {
-    // Attempt to load saved replies from localStorage
-    const savedReplies = JSON.parse(localStorage.getItem(`replies-${id}`) || "[]");
-    // Combine initialReplies from props with saved replies from localStorage
-    return [...initialReplies, ...savedReplies];
-  });
-
-  const [showReplyInput, setShowReplyInput] = useState(false);
-  const [replyText, setReplyText] = useState("");
-
-  const handleReplyButtonClick = () => {
-    setShowReplyInput(!showReplyInput);
+  const handleReplyClick = () => {
+    setIsReplying(!isReplying);
   };
 
-  const handleReplyTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setReplyText(e.target.value);
+  const handleReplyChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setReplyContent(e.target.value);
   };
 
-  const handlePostReply = () => {
-    const newReply = {
-      content: replyText,
-      replyingTo: user.username,
-      user: {
-        image: "/user-images/image-george.jpg", // Update this to the correct path or make it dynamic
-        name: "Arnie Thomas",
-        username: "thomasse",
-      },
-    };
 
-    const updatedReplies = [...replies, newReply];
+  const handlePostReply = async () => {
+    if (replyContent.trim()) {
+      try {
+        setLoading(true);
+        await request.post(`/feedback/${feedbackId}/comments/${_id}/replies`, {
+          content: replyContent,
+          replyingTo: user.username,
+          user: { name: "Arnie Thompson", username: "thomasse", image: "/user-images/image-george.jpg" },
+        });
 
-    // Update the replies state to include the new reply
-    setReplies(updatedReplies);
 
-    // Save updated replies to localStorage
-    localStorage.setItem(`replies-${id}`, JSON.stringify(updatedReplies));
+        message.success("Comment added");
+        setRefetch(!refetch);
+        setReplyContent('');
+        setIsReplying(false);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false)
+      }
 
-    // Clear the input and hide the reply box
-    setReplyText("");
-    setShowReplyInput(false);
+    }
   };
 
   return (
-    <div className="comment">
-      <div className="comment__user">
-        <div className="comment__user__part">
-          <img src={user.image} alt={`${user.name}'s profile`} />
-          <div className="comment__user-details">
-            <h4>{user.name}</h4>
-            <p>@{user.username}</p>
+    <>{!loading ? <div className="comment">
+      <div className="comment__header">
+        <div className="comment__user">
+          <img src={user?.image} alt={user?.name} />
+          <div>
+            <h3>{user?.name}</h3>
+            <p>@{user?.username}</p>
           </div>
-
         </div>
-        <button onClick={handleReplyButtonClick} className="comment__reply-button">
-          Reply
-        </button>
+        <div className="comment__reply">
+          <button onClick={handleReplyClick}>Reply</button>
+        </div>
       </div>
-      <p className="comment__content">{content}</p>
-      {showReplyInput && (
-        <div className="comment__reply-input">
-          <textarea
-            value={replyText}
-            onChange={handleReplyTextChange}
-            placeholder="Type your reply here..."
-          />
-          <button onClick={handlePostReply} className="comment__post-reply-button">
-            Post Reply
-          </button>
-        </div>
-      )}
-      {replies.length > 0 && (
+      <div className="comment__content">
+        <p>{content}</p>
+      </div>
+
+      {replies && replies.length > 0 && (
         <div className="comment__replies">
-          {replies.map((reply, index) => (
-            <div key={index} className="comment__reply">
-              <p>
-                <strong>@{reply.replyingTo}</strong> {reply.content}
-              </p>
-              <div className="comment__reply-user">
-                <img src={reply.user.image} alt={`${reply.user.name}'s profile`} />
-                <div className="comment__reply-user-details">
-                  <h4>{reply.user.name}</h4>
+          {replies.map((reply: Reply, index) => (
+            <div key={index} className="comment__reply-item">
+              <div className="comment__user">
+                <img src={reply.user.image} alt={reply.user.name} />
+                <div>
+                  <h3>{reply.user.name}</h3>
                   <p>@{reply.user.username}</p>
                 </div>
+              </div>
+              <div className="comment__content">
+                <p><strong>@{reply.replyingTo}</strong> {reply.content}</p>
               </div>
             </div>
           ))}
         </div>
       )}
-    </div>
+
+      {isReplying && (
+        <div className="comment__reply-box">
+          <textarea
+            value={replyContent}
+            onChange={handleReplyChange}
+          />
+          <button onClick={handlePostReply}>Post</button>
+        </div>
+      )}
+    </div> : <LoadingPage />}</>
+
   );
-};
+}
 
 export default CommentCard;

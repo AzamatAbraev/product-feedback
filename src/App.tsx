@@ -4,14 +4,14 @@ import SuggestionsPage from "./pages/suggestions/SuggestionsPage"
 import FeedbackDetailPage from "./pages/feedback-detail/FeedbackDetailPage"
 import FeedbackNewPage from "./pages/feedback-new/FeedbackNewPage"
 import FeedbackEditPage from "./pages/feedback-edit/FeedbackEditPage"
-import RoadmapPage from "./pages/roadmap/RoadmapPage"
+import NotFoundPage from "./pages/not-found/NotFoundPage"
 
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <SuggestionsPage />,
-    errorElement: <h1>Page not found</h1>
+    errorElement: <NotFoundPage />
   }, {
     path: "/feedback/:feedbackId",
     element: <FeedbackDetailPage />
@@ -23,10 +23,6 @@ const router = createBrowserRouter([
   {
     path: "/feedback/edit/:feedbackId",
     element: <FeedbackEditPage />
-  },
-  {
-    path: "/roadmap",
-    element: <RoadmapPage />
   }
 ])
 

@@ -1,7 +1,7 @@
 import { Comment } from "./Comment";
 
 export default interface Feedback {
-  id: number;
+  _id: string;
   title: string;
   description: string;
   category: string;
