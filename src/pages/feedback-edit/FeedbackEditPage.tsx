@@ -1,12 +1,12 @@
-import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
-import arrowLeft from "../../assets/shared/icon-arrow-left.svg";
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
+import arrowLeft from "../../assets/shared/icon-arrow-left.svg";
 import request from '../../server/request';
 
-import './FeedbackEdit.scss';
 import { message } from 'antd';
 import LoadingPage from '../../components/loading/LoadingPage';
 import ErrorPage from '../error/ErrorPage';
+import './FeedbackEdit.scss';
 
 interface FeedbackFormErrors {
   title?: string;

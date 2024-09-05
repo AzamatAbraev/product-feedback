@@ -1,15 +1,15 @@
-import { NavLink, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import FeedbackCard from "../../components/feedback-card/FeedbackCard";
-import Feedback from "../../types/Feedback";
+import { NavLink, useParams } from "react-router-dom";
 import arrow from "../../assets/shared/icon-arrow-left.svg";
 import CommentCard from "../../components/comment/CommentCard";
+import FeedbackCard from "../../components/feedback-card/FeedbackCard";
 import request from "../../server/request";
+import Feedback from "../../types/Feedback";
 import ErrorPage from "../error/ErrorPage";
 
-import "./FeedbackDetail.scss";
 import { message } from "antd";
 import LoadingPage from "../../components/loading/LoadingPage";
+import "./FeedbackDetail.scss";
 
 const FeedbackDetailPage = () => {
   const { feedbackId } = useParams();

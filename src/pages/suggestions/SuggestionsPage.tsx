@@ -1,16 +1,16 @@
+import { useQuery } from "@tanstack/react-query";
+import { Pagination } from "antd";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Pagination } from "antd";
-import { useQuery } from "@tanstack/react-query";
 import bulbIcon from "../../assets/suggestions/icon-suggestions.svg";
 import Dropdown from "../../components/dropdown/Dropdown";
 import FeedbackCard from "../../components/feedback-card/FeedbackCard";
 import NoFeedback from "../../components/no-feedback/NoFeedback";
-import Feedback from "../../types/Feedback";
 import request from "../../server/request";
+import Feedback from "../../types/Feedback";
 
-import "./Suggestions.scss";
 import LoadingPage from "../../components/loading/LoadingPage";
+import "./Suggestions.scss";
 
 interface FeedbackResponse {
   feedback: Feedback[];
@@ -40,7 +40,7 @@ const SuggestionsPage = () => {
   };
 
   const { data, isLoading, isError } = useQuery<FeedbackResponse>({
-    queryKey: ["feedbackData", currentPage, pageSize, filter, sortBy], 
+    queryKey: ["feedbackData", currentPage, pageSize, filter, sortBy],
     queryFn: () => fetchFeedback(currentPage, pageSize, filter, sortBy),
   });
 

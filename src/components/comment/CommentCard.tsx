@@ -1,9 +1,9 @@
+import { message } from 'antd';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import request from '../../server/request';
 import { Comment, Reply } from "../../types/Comment";
 import "./CommentCard.scss";
-import request from '../../server/request';
-import { useParams } from 'react-router-dom';
-import { message } from 'antd';
 
 const CommentCard = (props: Comment & { refetch: boolean; setRefetch: React.Dispatch<React.SetStateAction<boolean>> }) => {
   const { feedbackId } = useParams();

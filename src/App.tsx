@@ -1,10 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
-import SuggestionsPage from "./pages/suggestions/SuggestionsPage"
 import FeedbackDetailPage from "./pages/feedback-detail/FeedbackDetailPage"
-import FeedbackNewPage from "./pages/feedback-new/FeedbackNewPage"
 import FeedbackEditPage from "./pages/feedback-edit/FeedbackEditPage"
+import FeedbackNewPage from "./pages/feedback-new/FeedbackNewPage"
 import NotFoundPage from "./pages/not-found/NotFoundPage"
+import SuggestionsPage from "./pages/suggestions/SuggestionsPage"
 
 
 const router = createBrowserRouter([

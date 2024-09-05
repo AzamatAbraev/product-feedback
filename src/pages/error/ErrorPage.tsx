@@ -1,5 +1,5 @@
-import './Error.scss';
 import { NavLink } from 'react-router-dom';
+import './Error.scss';
 
 interface ErrorPageProps {
   message?: string;

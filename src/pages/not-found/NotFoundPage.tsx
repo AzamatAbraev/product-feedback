@@ -1,5 +1,5 @@
-import './NotFoundPage.scss';
 import { NavLink } from 'react-router-dom';
+import './NotFoundPage.scss';
 
 const NotFoundPage = () => {
   return (
